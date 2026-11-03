@@ -15,7 +15,10 @@ class AnalyzerTests(unittest.TestCase):
         self.assertIn('xn--', analyze_url('https://bücher.de').host)
     def test_report_json(self):
         import json
-        self.assertEqual(json.loads(analyze_url('example.com').to_json())['host'], 'example.com')
+        report = json.loads(analyze_url('https://example.com/private?token=secret').to_json())
+        self.assertEqual(report['host'], 'example.com')
+        self.assertNotIn('url', report)
+        self.assertNotIn('secret', json.dumps(report))
     def test_invalid(self):
         invalid = ['', '   ', 'https://', 'javascript:alert(1)', 'ftp://example.com',
                    'https://user:pass@example.com', 'https://a.com:99999',

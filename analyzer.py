@@ -25,7 +25,8 @@ class Result:
     findings: list[Finding]
     note: str = "Heuristic assessment only; this is not a verdict."
     def to_dict(self):
-        return {"url": self.url, "host": self.host, "scheme": self.scheme,
+        # Keep submitted paths and query strings out of exported reports.
+        return {"host": self.host, "scheme": self.scheme,
                 "score": self.score, "level": self.level,
                 "findings": [f.to_dict() for f in self.findings], "note": self.note}
     def to_json(self):
@@ -119,5 +120,5 @@ def analyze_url(url):
     if len(parsed.query) > 120:
         add("Long query string", "The URL contains a long query string.", 5, "low")
     score = min(100, max(0, score))
-    level = "High" if score >= 60 else "Medium" if score >= 30 else "Low" if score > 0 else "Safe"
+    level = "High" if score >= 60 else "Medium" if score >= 30 else "Low" if score > 0 else "No indicators"
     return Result(normalized, host, scheme, score, level, findings)

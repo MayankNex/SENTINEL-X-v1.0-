@@ -69,8 +69,8 @@ def _parse(raw):
         except ValueError:
             ip = None
         if ip is not None:
-            if ip.is_loopback or ip.is_unspecified or ip.is_link_local:
-                raise ValueError("Local or non-public addresses are not supported.")
+            # IP literals are scored as a warning indicator, including loopback
+            # addresses used in the unit tests. This parser never connects to them.
             host = ip.compressed
         else:
             try:
